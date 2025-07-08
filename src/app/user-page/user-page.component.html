@@ -1,0 +1,178 @@
+ <div class="card shadow">
+    <div class="card-header text-center">
+        <h3 class="mb-0"
+            style="font-size: large; font-weight: 500;">User-Form</h3>
+    </div>
+    <div class="card-body"></div>
+    <form #UserForm="ngForm" (ngSubmit)="onSubmit(UserForm)">
+        <div class="row g-3 mb-3">
+            <div class="col">
+                <label for="UserID" class="form-label">UserID:</label>
+                <input type="text" name="UserID" id="UserID"
+                    class="form-control"
+                    placeholder="UserID" [(ngModel)]="UserData.UserID"
+                    #UserID="ngModel" required autocomplete="off">
+                <div
+                    *ngIf="UserForm.invalid && UserForm.submitted || (UserID.dirty || UserID.touched)"
+                    class="error">
+                    <div
+                        *ngIf="UserID.errors?.['required']">UserID is required.
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <label for="Username" class="form-label">Username:</label>
+                <input type="text" name="Username" id="Username"
+                    class="form-control"
+                    placeholder="Username"
+                    [(ngModel)]="UserData.Username"
+                    #Username="ngModel" minlength="5" required
+                    autocomplete="off">
+                <div
+                    *ngIf="UserForm.invalid && UserForm.submitted || (Username.dirty || Username.touched)"
+                    class="error">
+                    <div
+                        *ngIf="Username.errors?.['required']">Username is
+                        required.
+                    </div>
+                    <div
+                        *ngIf="Username.errors?.['minlength']">Username must be
+                        at least 5 characters long.
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <label for="Email" class="form-label">Email:</label>
+                <input type="email" name="Email" id="Email"
+                    class="form-control"
+                    placeholder="Email" [(ngModel)]="UserData.Email"
+                    #Email="ngModel" required
+                    autocomplete="off">
+                <div
+                    *ngIf="UserForm.invalid && UserForm.submitted || (Email.dirty || Email.touched)"
+                    class="error">
+                    <div
+                        *ngIf="Email.errors?.['required']">Email is
+                        required.
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="row g-3 mb-3">
+            <div class="col">
+                <label class="form-label">Roles:</label>
+                <ng-select
+                    [items]="allRoles"
+                    bindLabel="name"
+                    bindValue="name"
+                    placeholder="Select Roles"
+                    appendTo="body"
+                    [multiple]="true"
+                    name="Roles"
+                    [(ngModel)]="UserData.Roles"
+                    required
+                    #Roles="ngModel"
+                    class="form-control">
+                </ng-select>
+
+                <div class="error"
+                    *ngIf="(Roles.invalid && (Roles.dirty || Roles.touched || UserForm.submitted))">
+                    <div *ngIf="Roles.errors?.['required']">
+                        This field is required.
+                    </div>
+                </div>
+            </div>
+
+            <div class="col">
+                <div *ngFor="let item of UserData.Permissions; let i = index">
+                    <label for="Module" class="form-label">Module:</label>
+                    <input type="text" name="Module{{i}}" id="Module"
+                        class="form-control"
+                        placeholder="Module"
+                        [(ngModel)]="UserData.Permissions.Module"
+                        #Module="ngModel" required minlength="5"
+                        autocomplete="off">
+                    <div
+                        *ngIf="UserForm.invalid && UserForm.submitted || (Module.dirty || Module.touched)"
+                        class="error">
+                        <div
+                            *ngIf="Module.errors?.['required']">Module is
+                            required.
+                        </div>
+                        <div
+                            *ngIf="Module.errors?.['minlength']">Module must be
+                            at least 5 characters long.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <label class="form-label">Access:</label>
+                <ng-select
+                    [items]="allAccess"
+                    bindLabel="name"
+                    bindValue="name"
+                    placeholder="Select Access"
+                    appendTo="body"
+                    [multiple]="true"
+                    name="Access"
+                    [(ngModel)]="UserData.Permissions.Access"
+                    required
+                    #Access="ngModel"
+                    class="form-control">
+                </ng-select>
+
+                <div class="error"
+                    *ngIf="(Access.invalid && (Access.dirty || Access.touched || UserForm.submitted))">
+                    <div *ngIf="Access.errors?.['required']">
+                        This field is required.
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+            <button type="submit"
+                class="btn btn-outline-success btn-sm"><i
+                    class="fa-solid fa-floppy-disk"></i> Submit</button>
+            <button class="btn btn-outline-warning btn-sm" type="button"
+                (click)="clearForm(UserForm)">Clear</button></div>
+    </form>
+    <div class="card-footer mt-3">
+        <input type="text" name="search" class="form-label" id="search"
+            placeholder="search"
+            [(ngModel)]="searchTerm" #search="ngModel" (keyup)="applyfilter()"
+            autocomplete="off">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">S.no</th>
+                    <th scope="col">UserID</th>
+                    <th scope="col">Username</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Roles</th>
+                    <th scope="col">Module</th>
+                    <th scope="col">Access</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr
+                    *ngFor="let item of filterData | paginate: { itemsPerPage: itemsPerPage, currentPage: currentPage }; let i = index">
+                    <td scope="row">{{i+1}}</td>
+                    <td>{{item.UserID}}</td>
+                    <td>{{item.Username}}</td>
+                    <td>{{item.Email}}</td>
+                    <td>{{item.Roles}}</td>
+                    <td>{{item.Module}}</td>
+                    <td>{{item.Access}}</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <pagination-controls class="pc"
+                    (pageChange)="currentPage = $event"></pagination-controls>
+            </tfoot>
+
+        </table>
+    </div>
+</div>

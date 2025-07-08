@@ -1,0 +1,13 @@
+.card{
+    margin: 20px;
+    padding: 20px;
+    height: 100vh;
+}
+
+
+.error {
+  color: red;
+  font-size: 0.8em;
+  margin-top: 5px;
+}
+
